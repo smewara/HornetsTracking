@@ -1,0 +1,2 @@
+idf1,idp,idr,recall,precision,num_unique_objects,mostly_tracked,partially_tracked,mostly_lost,num_false_positives,num_misses,num_switches,num_fragmentations,mota,motp,num_transfer,num_ascend,num_migrate
+0.1666629846459737,0.2601199917247086,0.12261084384345339,0.33457937849434405,0.7098131163368043,28,1,10,17,4208,20471,219,1136,0.19067741516057735,0.3551466593053118,16,104,3
