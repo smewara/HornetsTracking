@@ -1,3 +1,4 @@
+from Trackers.BOTSortTracker import BotSortTracker
 from Trackers.ByteTracker import ByteTracker
 from Trackers.DeepSortTracker import DeepSortTracker
 from Model.ObjectDetector import ObjectDetector
@@ -12,18 +13,22 @@ def train_model():
     model = ObjectDetector()
     model.train_model(epochs=50)
 
-def model_tracking(model_path, tracker, video_path, results_file):
+def model_tracking(model_path, tracker, tracker_name, video_path, results_file):
     model = ObjectDetector(model_path=model_path).get_model()
     tracker = ObjectTracker(model=model, tracker=tracker)
-    tracker.track_hornets(video_path=video_path)
+    tracker.track_hornets(video_path=video_path, tracker_name=tracker_name)
     tracker.save_tracking_results(results_file)
 
 def compare_results(ground_truth_file, model_tracking_file, results_file):
     motMetrics = MOTMetrics(ground_truth_file, model_tracking_file)
     motMetrics.save_tracking_results(results_file=results_file)
 
-def get_tracker(tracker_name, video_name):
-    if tracker_name == TrackerEnum.BYTETRACK:
+def get_tracker(tracker_name, video_name, model_path):
+    if tracker_name == TrackerEnum.BOTSORT:
+        botsort_tracker = BotSortTracker(model_path=model_path)
+        botsort_tracker_file = f'Inference/{video_name}_botsort_tracker.csv'
+        return botsort_tracker, botsort_tracker_file
+    elif tracker_name == TrackerEnum.BYTETRACK:
         byte_tracker = ByteTracker()
         byte_tracker_file = f'Inference/{video_name}_byte_tracker.csv'
         return byte_tracker, byte_tracker_file
@@ -37,19 +42,20 @@ def main():
     video_path = f'Datasource/Hornet_videos/Hornet_Colony_{video_name}.mov'
     model_path = r'Model\train4\weights\best.pt'
     ground_truth_file = r'Inference\MAH00002_gt.txt'
-    tracker_name = TrackerEnum.DEEPSORT
+    tracker_name = TrackerEnum.BOTSORT
     metrics_results_file = f'Inference/{tracker_name}_motmetrics_results.csv'
 
-    tracker, tracker_file = get_tracker(tracker_name=tracker_name, video_name=video_name)
+    tracker, tracker_file = get_tracker(tracker_name=tracker_name, video_name=video_name, model_path=model_path)
 
     #Utils.copy_images_labels(dataset_dir=dataset_dir, video_name=video_name, images_dir=images_dir, labels_dir=labels_dir)
 
     #train_model()
-    '''
+
     model_tracking(model_path=model_path, tracker=tracker, 
+                   tracker_name=tracker_name,
                    video_path=video_path, 
                    results_file=tracker_file)
-    '''
+
     compare_results(ground_truth_file=ground_truth_file, 
                     model_tracking_file=tracker_file,
                     results_file=metrics_results_file)

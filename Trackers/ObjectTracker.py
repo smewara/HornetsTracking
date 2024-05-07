@@ -63,7 +63,7 @@ class ObjectTracker:
         
         print(f"Tracking results saved to: {output_csv_file}")
 
-    def track_hornets(self, video_path):
+    def track_hornets(self, video_path, tracker_name):
         #frame_generator = sv.get_video_frames_generator(source_path=video_path)
         cap = cv2.VideoCapture(video_path)
         frame_id = 0
@@ -73,7 +73,7 @@ class ObjectTracker:
                 break
             frame_id += 1
             processed_frame = self.process_frame(frame=frame, frame_id=frame_id)
-            cv2.imshow('HornetTracking', processed_frame)
+            cv2.imshow(f'{tracker_name}', processed_frame)
             if (cv2.waitKey(1) & 0xFF == ord('q')):
                 break
         cap.release()
