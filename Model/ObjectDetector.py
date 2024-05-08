@@ -6,8 +6,8 @@ class ObjectDetector:
             self.model = YOLO(model_path)
 
     def train_model(self, epochs):
-        model = YOLO('yolov9c.pt')
-        results = model.train(data=r'Model\data.yaml', epochs=epochs)
+        model = YOLO('yolov8m.pt')
+        results = model.train(data='Model/data.yaml', epochs=epochs)
 
     def load_model(self, model_path):
         self.model = YOLO(model_path)

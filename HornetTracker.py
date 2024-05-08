@@ -6,8 +6,16 @@ import os
 from Trackers.ObjectTracker import ObjectTracker
 from Inference.MOTMetrics import MOTMetrics
 from Trackers.TrackerEnum import TrackerEnum
+from Utils import Utils
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
+def create_train_data():
+    video_name = ''
+    dataset_dir = f''
+    images_dir = r''
+    labels_dir = r''
+    Utils.copy_images_labels(dataset_dir=dataset_dir, video_name=video_name, images_dir=images_dir, labels_dir=labels_dir)
 
 def train_model():
     model = ObjectDetector()
@@ -47,10 +55,8 @@ def main():
 
     tracker, tracker_file = get_tracker(tracker_name=tracker_name, video_name=video_name, model_path=model_path)
 
-    #Utils.copy_images_labels(dataset_dir=dataset_dir, video_name=video_name, images_dir=images_dir, labels_dir=labels_dir)
-
-    #train_model()
-
+    train_model()
+    '''
     model_tracking(model_path=model_path, tracker=tracker, 
                    tracker_name=tracker_name,
                    video_path=video_path, 
@@ -59,6 +65,6 @@ def main():
     compare_results(ground_truth_file=ground_truth_file, 
                     model_tracking_file=tracker_file,
                     results_file=metrics_results_file)
-
+    '''
 if __name__ == "__main__":
     main()
