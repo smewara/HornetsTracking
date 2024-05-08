@@ -7,7 +7,7 @@ from ultralytics import YOLO
 class DeepSortTracker:
     def __init__(self, model_path):
         self.model = YOLO(model=model_path)
-        self.tracker = DeepSort(max_age=900)
+        self.tracker = DeepSort(max_age=900, max_iou_distance=0.7)
 
     def track(self, frame, confidence_threshold):
         detections = sv.Detections.from_ultralytics(self.model(frame)[0])
