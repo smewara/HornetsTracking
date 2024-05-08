@@ -5,19 +5,15 @@ import cv2
 
 class ObjectTracker:
 
-    def __init__(self, model, tracker, bbox=None):
-        self.model = model
+    def __init__(self, tracker, bbox=None):
         self.tracking_results = []
         self.tracker = tracker
         self.bbox = bbox
         self.confidence_threshold = 0.5
 
     def process_frame(self, frame, frame_id):
-        result = self.model(frame)[0]
-        detections = sv.Detections.from_ultralytics(result)
-        detections, annotated_frame = self.tracker.update(detections=detections, 
-                                                          frame=frame, 
-                                                          confidence_threshold=self.confidence_threshold)
+        detections, annotated_frame = self.tracker.track(frame=frame, 
+                                                         confidence_threshold=self.confidence_threshold)
         self.log_detections(detections=detections, frame_id=frame_id)
         return annotated_frame       
     

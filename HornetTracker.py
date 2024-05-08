@@ -23,7 +23,7 @@ def train_model():
 
 def model_tracking(model_path, tracker, tracker_name, video_path, results_file):
     model = ObjectDetector(model_path=model_path).get_model()
-    tracker = ObjectTracker(model=model, tracker=tracker)
+    tracker = ObjectTracker(tracker=tracker)
     tracker.track_hornets(video_path=video_path, tracker_name=tracker_name)
     tracker.save_tracking_results(results_file)
 
@@ -37,11 +37,11 @@ def get_tracker(tracker_name, video_name, model_path):
         botsort_tracker_file = f'Inference/{video_name}_botsort_tracker.csv'
         return botsort_tracker, botsort_tracker_file
     elif tracker_name == TrackerEnum.BYTETRACK:
-        byte_tracker = ByteTracker()
+        byte_tracker = ByteTracker(model_path=model_path)
         byte_tracker_file = f'Inference/{video_name}_byte_tracker.csv'
         return byte_tracker, byte_tracker_file
     elif tracker_name == TrackerEnum.DEEPSORT:
-        deep_sort_tracker = DeepSortTracker()
+        deep_sort_tracker = DeepSortTracker(model_path=model_path)
         deep_sort_tracker_file = f'Inference/{video_name}_deepsort_tracker.csv'
         return deep_sort_tracker, deep_sort_tracker_file
     
@@ -50,13 +50,13 @@ def main():
     video_path = f'Datasource/Hornet_videos/Hornet_Colony_{video_name}.mov'
     model_path = r'Model\train4\weights\best.pt'
     ground_truth_file = r'Inference\MAH00002_gt.txt'
-    tracker_name = TrackerEnum.BOTSORT
+    tracker_name = TrackerEnum.DEEPSORT
     metrics_results_file = f'Inference/{tracker_name}_motmetrics_results.csv'
 
     tracker, tracker_file = get_tracker(tracker_name=tracker_name, video_name=video_name, model_path=model_path)
 
-    train_model()
-    '''
+    #train_model()
+
     model_tracking(model_path=model_path, tracker=tracker, 
                    tracker_name=tracker_name,
                    video_path=video_path, 
@@ -65,6 +65,6 @@ def main():
     compare_results(ground_truth_file=ground_truth_file, 
                     model_tracking_file=tracker_file,
                     results_file=metrics_results_file)
-    '''
+
 if __name__ == "__main__":
     main()
