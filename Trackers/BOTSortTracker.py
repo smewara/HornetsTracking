@@ -7,7 +7,7 @@ class BotSortTracker:
         self.model = YOLO(model=model_path)
     
     def track(self, frame, confidence_threshold):
-        results = self.model.track(frame, persist=True)
+        results = self.model.track(frame, persist=True, tracker='botsort.yaml')
         detections, frame = self._annotate_results(frame=frame, results=results)
         return detections, frame
     

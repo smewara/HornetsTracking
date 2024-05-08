@@ -62,6 +62,8 @@ class ObjectTracker:
     def track_hornets(self, video_path, tracker_name):
         #frame_generator = sv.get_video_frames_generator(source_path=video_path)
         cap = cv2.VideoCapture(video_path)
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        print(f'\nFPS:{fps}\n')
         frame_id = 0
         while True:
             ret, frame = cap.read()
