@@ -69,16 +69,21 @@ class Utils:
 
         return yolo_labels
     
-    def copy_images_labels(dataset_dir, video_name, images_dir, labels_dir):
+    def copy_images_labels(dataset_dir, images_dir, labels_dir):
         os.makedirs(images_dir, exist_ok=True)
         os.makedirs(labels_dir, exist_ok=True)
 
-        for file in os.listdir(dataset_dir):
-            if file.endswith('.PNG'):
-                shutil.copy(os.path.join(dataset_dir, file), os.path.join(images_dir, f'{video_name}_{file}'))
+        subdirs = [os.path.join(dataset_dir, subdir) for subdir in os.listdir(dataset_dir) 
+                   if os.path.isdir(os.path.join(dataset_dir, subdir))]
+        
+        for subdir in subdirs:
+            for file in os.listdir(subdir):
+                dir_name = subdir.split('\\')[-1]
+                if file.endswith('.PNG'):
+                    shutil.copy(os.path.join(subdir, file), os.path.join(images_dir, f'{dir_name}_{file}'))
 
-            elif file.endswith('.txt'):
-                shutil.copy(os.path.join(dataset_dir, file), os.path.join(labels_dir, f'{video_name}_{file}'))
+                elif file.endswith('.txt'):
+                    shutil.copy(os.path.join(subdir, file), os.path.join(labels_dir, f'{dir_name}_{file}'))
                  
 
     # Function to parse all XML files in a directory and convert to YOLO format

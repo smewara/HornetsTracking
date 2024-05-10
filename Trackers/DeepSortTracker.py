@@ -4,12 +4,14 @@ import pandas as pd
 import supervision as sv
 from ultralytics import YOLO
 
-class DeepSortTracker:
+from Trackers.ObjectTracker import ObjectTracker
+
+class DeepSortTracker(ObjectTracker):
     def __init__(self, model_path):
         self.model = YOLO(model=model_path)
-        self.tracker = DeepSort(max_age=900, max_iou_distance=0.7)
+        self.tracker = DeepSort(max_age=900, max_iou_distance=0.6)
 
-    def track(self, frame, confidence_threshold):
+    def track(self, frame):
         detections = sv.Detections.from_ultralytics(self.model(frame)[0])
         xyxy = detections.xyxy
         confs = detections.confidence
@@ -22,6 +24,9 @@ class DeepSortTracker:
             cls_id = class_ids[detection_idx]
             x_min, y_min, x_max, y_max = bbox[0], bbox[1], bbox[2], bbox[3]
             
+            if confidence <= 0.1:
+                continue
+
             results.append([[int(x_min), int(y_min), int(x_max)-int(x_min), int(y_max)-int(y_min)], confidence, int(cls_id)])
         tracks = self.tracker.update_tracks(raw_detections=results, frame=frame)
         tracked_detections, frame = self._annotate_detections(tracks=tracks, frame=frame)
@@ -50,7 +55,15 @@ class DeepSortTracker:
                 'class_id': class_id
             })
 
-            cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (255,0,0), 1)
-            cv2.putText(frame, f'#{track_id} Conf: {conf:.2f}', (x_min + 2, y_min - 2), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255,255,255), 1)
-
+            cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (255, 0, 0), 1)
+            cv2.putText(
+                img=frame,
+                text=f'#{track_id} Conf: {conf:.2f}',
+                org=(x_min, y_min - 2),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=0.5,
+                color=(255,255,255),
+                thickness=1,
+                lineType=cv2.LINE_AA,
+            )
         return pd.DataFrame(tracked_detections), frame

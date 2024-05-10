@@ -2,16 +2,14 @@ import pandas as pd
 import supervision as sv
 from ultralytics import YOLO
 
-class BotSortTracker:
+from Trackers.ObjectTracker import ObjectTracker
+
+class BotSortTracker(ObjectTracker):
     def __init__(self, model_path):
         self.model = YOLO(model=model_path)
     
-    def track(self, frame, confidence_threshold):
+    def track(self, frame):
         results = self.model.track(frame, persist=True, tracker='botsort.yaml')
-        detections, frame = self._annotate_results(frame=frame, results=results)
-        return detections, frame
-    
-    def _annotate_results(self, frame, results):
         if results is None or len(results[0]) == 0:
             return pd.DataFrame(), frame
         
