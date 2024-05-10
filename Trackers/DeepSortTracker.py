@@ -9,7 +9,7 @@ from Trackers.ObjectTracker import ObjectTracker
 class DeepSortTracker(ObjectTracker):
     def __init__(self, model_path):
         self.model = YOLO(model=model_path)
-        self.tracker = DeepSort(max_age=900, max_iou_distance=0.6)
+        self.tracker = DeepSort(max_age=900, max_iou_distance=0.7)
 
     def track(self, frame):
         detections = sv.Detections.from_ultralytics(self.model(frame)[0])
