@@ -73,7 +73,7 @@ def main():
     video_path = f'Datasource/Hornet_videos/Hornet_Colony_{video_name}.mov'
     model_path = r'Model\train\weights\best.pt'
     ground_truth_file = r'Inference\MAH00002_gt.txt'
-    tracker_name = TrackerEnum.DEEPSORT
+    tracker_name = TrackerEnum.BYTETRACK
     
     #create_train_data()
     #train_model()
